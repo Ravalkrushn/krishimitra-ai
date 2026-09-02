@@ -1,0 +1,24 @@
+{
+  "name": "krishimitra-ai",
+  "version": "1.0.0",
+  "description": "KrishiMitra AI — Agentic AI Market Decision Copilot for Cotton & Groundnut Farmers",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.6.0",
+    "react-icons": "^5.7.0",
+    "react-toastify": "^11.1.0",
+    "recharts": "^2.8.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite": "^5.0.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
