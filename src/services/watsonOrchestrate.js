@@ -1,43 +1,14 @@
 // ============================================================
 //  IBM Watson Orchestrate API Service
-//  Endpoint: https://api.au-syd.watson-orchestrate.cloud.ibm.com
-//  Instance:  f538224f-3143-4dbd-b202-1d97bf14915a
+//  Uses local proxy (localhost:3001) to avoid browser CORS.
+//  Proxy: node proxy.js  |  npm run proxy
+//  Instance: f538224f-3143-4dbd-b202-1d97bf14915a  (au-syd)
 // ============================================================
 
-const WO_BASE_URL =
-  "https://api.au-syd.watson-orchestrate.cloud.ibm.com/instances/f538224f-3143-4dbd-b202-1d97bf14915a";
-const WO_API_KEY = "jWjYnClRhieS3ivfEsSsD_GwcS1Gixh17t73_WVF-TjT";
-
-/**
- * Get an IAM bearer token using the API key.
- * Caches for 50 minutes.
- */
-let _tokenCache = null;
-let _tokenExpiry = 0;
-
-async function getIAMToken() {
-  const now = Date.now();
-  if (_tokenCache && now < _tokenExpiry) return _tokenCache;
-
-  const resp = await fetch("https://iam.cloud.ibm.com/identity/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ibm:params:oauth:grant-type:apikey",
-      apikey: WO_API_KEY,
-    }),
-  });
-
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`IAM token error ${resp.status}: ${text}`);
-  }
-
-  const data = await resp.json();
-  _tokenCache = data.access_token;
-  _tokenExpiry = now + 50 * 60 * 1000; // 50 min
-  return _tokenCache;
-}
+// In dev: route through local proxy to avoid CORS
+// In prod: use direct IBM endpoint (server-side rendering / Node env)
+const IS_DEV   = import.meta.env?.DEV ?? true;
+const PROXY    = "http://localhost:3001";
 
 /**
  * Build the KrishiMitra system prompt for Watson Orchestrate.
@@ -69,57 +40,51 @@ Rules:
 }
 
 /**
- * Send a chat message to Watson Orchestrate and get a response.
- *
- * @param {string} userMessage  — farmer's question
- * @param {Array}  history      — [{role:"user"|"assistant", content:string}]
- * @param {Object} farmerProfile
- * @returns {Promise<string>}   — AI response text
+ * Send a chat message to Watson Orchestrate via local proxy.
+ * Falls back to null (triggers local agent logic) on any failure.
  */
 export async function chatWithWatsonOrchestrate(userMessage, history = [], farmerProfile = {}) {
-  try {
-    const token = await getIAMToken();
+  if (!IS_DEV) {
+    // In production build, skip proxy attempt and use local fallback
+    return null;
+  }
 
-    // Build messages array
+  try {
     const messages = [
       { role: "system", content: buildSystemPrompt(farmerProfile) },
-      ...history.slice(-10), // keep last 10 turns for context
+      ...history.slice(-10),
       { role: "user", content: userMessage },
     ];
 
-    // Try Watson Orchestrate chat completions endpoint
-    const response = await fetch(`${WO_BASE_URL}/v1/chat/completions`, {
+    const response = await fetch(`${PROXY}/api/chat`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "ibm/granite-13b-chat-v2",
         messages,
         max_tokens: 512,
         temperature: 0.3,
       }),
+      signal: AbortSignal.timeout(15000), // 15s timeout
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Watson Orchestrate error:", response.status, errText);
-      throw new Error(`Watson Orchestrate API error ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Proxy error ${response.status}`);
 
     const data = await response.json();
+
+    if (!data.ok) throw new Error(data.error || "Proxy returned error");
+
     const content =
-      data?.choices?.[0]?.message?.content ||
-      data?.result?.message?.content ||
-      data?.output?.text ||
+      data?.data?.choices?.[0]?.message?.content ||
+      data?.data?.result?.message?.content ||
+      data?.data?.output?.text ||
       null;
 
     if (!content) throw new Error("Empty response from Watson Orchestrate");
     return content;
+
   } catch (err) {
-    console.warn("Watson Orchestrate unavailable, using local fallback:", err.message);
-    // Return null to signal fallback to local agent logic
+    console.warn("Watson Orchestrate proxy unavailable, using local fallback:", err.message);
     return null;
   }
 }
