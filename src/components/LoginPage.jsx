@@ -498,7 +498,7 @@ export default function LoginPage() {
             marginTop: 16,
           }}
         >
-          Challenge 13 — IBM Hackathon 2024 • Demo Data Only
+          IBM Hackathon 2026 
         </p>
       </div>
 

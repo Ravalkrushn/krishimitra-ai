@@ -25,6 +25,10 @@ import FarmersManagement from "./components/screens/FarmersManagement";
 import WatsonTest from "./components/WatsonTest";
 import LanguageGuide from "./components/LanguageGuide";
 import SmartToolsScreen from "./components/screens/SmartToolsScreen";
+import PriceFairnessScreen from "./components/screens/PriceFairnessScreen";
+import DecisionCenterScreen from "./components/screens/DecisionCenterScreen";
+import MarketComparisonScreen from "./components/screens/MarketComparisonScreen";
+import SellingHistoryScreen from "./components/screens/SellingHistoryScreen";
 
 // Hooks
 import { useOrchestrator } from "./hooks/useOrchestrator";
@@ -44,6 +48,8 @@ import {
   MdLogout,
   MdManageAccounts,
   MdStorefront,
+  MdCompareArrows,
+  MdHistory,
 } from "react-icons/md";
 import { FaShieldAlt, FaLeaf } from "react-icons/fa";
 import { GiFarmer, GiWheat } from "react-icons/gi";
@@ -53,16 +59,19 @@ import { HiSparkles } from "react-icons/hi";
 const NAV = [
   { id: "home", icon: <MdHome />, key: "home" },
   { id: "market", icon: <MdBarChart />, key: "market" },
+  { id: "comparison", icon: <MdCompareArrows />, key: "marketComparison" },
+  { id: "history", icon: <MdHistory />, key: "sellingHistory" },
   { id: "buyers", icon: <MdPeople />, key: "buyers" },
   { id: "quality", icon: <MdVerifiedUser />, key: "quality" },
   { id: "store", icon: <MdScale />, key: "store" },
   {
     id: "dashboard",
     icon: <MdAccountBalanceWallet />,
-    key: "dashboard",
+    key: "decisionCenter",
   },
   { id: "chat", icon: <MdSmartToy />, key: "chat" },
   { id: "tools", icon: <MdBarChart />, key: "tools" },
+  { id: "fairness", icon: <GiWheat />, key: "priceFairness" },
 ];
 
 const NAV2 = [
@@ -135,6 +144,10 @@ function AppInner() {
         );
       case "market":
         return <MarketScreen results={results} crop={profile.crop} />;
+      case "comparison":
+        return <MarketComparisonScreen onNav={go} profile={profile} />;
+      case "history":
+        return <SellingHistoryScreen onNav={go} />;
       case "buyers":
         return <BuyersScreen results={results} profile={profile} />;
       case "quality":
@@ -143,7 +156,7 @@ function AppInner() {
         return <StorageScreen results={results} />;
       case "dashboard":
         return (
-          <DashboardScreen
+          <DecisionCenterScreen
             results={results}
             profile={profile}
             farmerProfile={profile}
@@ -151,6 +164,7 @@ function AppInner() {
             completedSteps={completedSteps}
             activeStep={activeStep}
             onLaunch={launch}
+            onNav={go}
           />
         );
       case "chat":
@@ -163,6 +177,8 @@ function AppInner() {
         );
       case "tools":
         return <SmartToolsScreen profile={profile} />;
+      case "fairness":
+        return <PriceFairnessScreen onNav={go} profile={profile} />;
       case "manage-buyers":
         return (
           <div className="screen">
