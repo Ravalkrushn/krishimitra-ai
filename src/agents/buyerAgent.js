@@ -89,6 +89,6 @@ export function runBuyerMatchingAgent({ crop, quantity, location }) {
       reason: topBuyer.matchReason,
     },
     disclaimer:
-      "⚠️ Buyer matches are based on demo/sample data and suitability criteria only. Verify buyer credentials independently before transacting.",
+      "Buyer matches are based on demo/sample data and suitability criteria only. Verify buyer credentials independently before transacting.",
   };
 }

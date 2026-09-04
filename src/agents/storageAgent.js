@@ -104,6 +104,6 @@ export function runStorageAdvisorAgent({
     recommendationText,
     reasoningSteps,
     disclaimer:
-      "⚠️ Storage scenario uses estimated future prices based on trend only. Actual prices cannot be guaranteed. Storage costs are estimates. Make the final decision based on your own assessment.",
+      "Storage scenario uses estimated future prices based on trend only. Actual prices cannot be guaranteed. Storage costs are estimates. Make the final decision based on your own assessment.",
   };
 }

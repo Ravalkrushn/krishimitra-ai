@@ -14,7 +14,7 @@ const PORT = 3001;
 // IBM config
 const WO_BASE = "https://api.au-syd.watson-orchestrate.cloud.ibm.com/instances/f538224f-3143-4dbd-b202-1d97bf14915a";
 const IAM_URL = "https://iam.cloud.ibm.com/identity/token";
-const API_KEY = "jWjYnClRhieS3ivfEsSsD_GwcS1Gixh17t73_WVF-TjT";
+const API_KEY = "QdP7lJSsEGolmETHW2tRP5t9HwCfxCiRTGMxVDl6wL_i";
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());

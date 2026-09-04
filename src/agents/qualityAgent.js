@@ -135,6 +135,6 @@ export function runQualityAgent({ crop, qualityTier = "medium", notes = "" }) {
     improvementTips: tips,
     farmerNotes: notes,
     disclaimer:
-      "⚠️ This is an AI-assisted quality estimate based on self-reported information only. It is NOT an official laboratory grade certification. For certified grading, contact an accredited testing laboratory or your APMC.",
+      "This is an AI-assisted quality estimate based on self-reported information only. It is NOT an official laboratory grade certification. For certified grading, contact an accredited testing laboratory or your APMC.",
   };
 }

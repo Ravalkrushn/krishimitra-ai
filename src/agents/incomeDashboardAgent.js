@@ -119,11 +119,11 @@ function buildFinalRecommendation({
   const priceFormatted = `₹${bestAvailablePrice}/quintal`;
 
   const steps = [
-    `📊 Market Analysis: Current best ${cropLabel} price is ₹${bestAvailablePrice}/quintal at ${bestSource}. Price outlook is ${priceOutlookDir}.`,
-    `🤝 Best Buyer Match: ${topBuyer ? `${topBuyer.name} (${topBuyer.location}, ${topBuyer.distanceKm}km away) offering ${priceFormatted} — ${topBuyer.matchScore} match.` : "No buyer data available."}`,
-    `🌾 Quality: Estimated grade is ${qualityGrade}. ${qualityGrade.includes("A") || qualityGrade.includes("Export") ? "This supports access to premium buyer options." : "Some buyers may offer lower prices due to quality grade."}`,
-    `🏪 Sell vs Store: Based on current market data, recommendation is to ${storageSuggestion}. ${storageResult?.netDifference > 0 ? `Storage could add ~₹${Math.round(storageResult.netDifference).toLocaleString("en-IN")} net after storage costs.` : `Selling now avoids storage cost and price uncertainty.`}`,
-    `💰 Estimated Gross Revenue: ${revenueFormatted} for ${quantity} quintals at ${priceFormatted}.`,
+    `Market Analysis: Current best ${cropLabel} price is ₹${bestAvailablePrice}/quintal at ${bestSource}. Price outlook is ${priceOutlookDir}.`,
+    `Best Buyer Match: ${topBuyer ? `${topBuyer.name} (${topBuyer.location}, ${topBuyer.distanceKm}km away) offering ${priceFormatted} — ${topBuyer.matchScore} match.` : "No buyer data available."}`,
+    `Quality: Estimated grade is ${qualityGrade}. ${qualityGrade.includes("A") || qualityGrade.includes("Export") ? "This supports access to premium buyer options." : "Some buyers may offer lower prices due to quality grade."}`,
+    `Sell vs Store: Based on current market data, recommendation is to ${storageSuggestion}. ${storageResult?.netDifference > 0 ? `Storage could add ~₹${Math.round(storageResult.netDifference).toLocaleString("en-IN")} net after storage costs.` : `Selling now avoids storage cost and price uncertainty.`}`,
+    `Estimated Gross Revenue: ${revenueFormatted} for ${quantity} quintals at ${priceFormatted}.`,
   ];
 
   const summary = storageSuggestion === "Sell Now"

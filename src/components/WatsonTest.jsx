@@ -3,6 +3,8 @@
 //  Browser → http://localhost:3001 → IBM Cloud (no CORS issue)
 // ============================================================
 import React, { useState } from "react";
+import { FiCheckCircle, FiXCircle, FiAlertTriangle, FiClock, FiGlobe, FiZap } from "react-icons/fi";
+import { FaRobot } from "react-icons/fa";
 
 const PROXY = "http://localhost:3001";
 
@@ -36,7 +38,7 @@ export default function WatsonTest() {
       const r = await fetch(`${PROXY}/health`, { signal: AbortSignal.timeout(4000) });
       const d = await r.json();
       setR("health", { status: "ok", httpStatus: r.status, ...d });
-      addLog("Proxy server is running ✓", "ok");
+      addLog("Proxy server is running", "ok");
     } catch (e) {
       setR("health", {
         status: "fail",
@@ -151,7 +153,8 @@ export default function WatsonTest() {
     addLog("Diagnostics complete.", "info");
   };
 
-  const icon  = s => ({ ok:"✅", fail:"❌", warn:"⚠️", running:"⏳" }[s] || "⬜");
+  const iconMap = { ok:<FiCheckCircle style={{color:"#15803d",fontSize:18}} />, fail:<FiXCircle style={{color:"#dc2626",fontSize:18}} />, warn:<FiAlertTriangle style={{color:"#b45309",fontSize:18}} />, running:<FiClock style={{color:"#1d4ed8",fontSize:18}} /> };
+  const icon  = s => iconMap[s] || <span style={{display:"inline-block",width:18,height:18,borderRadius:4,background:"#e5e7eb"}} />;
   const bg    = s => ({ ok:"#f0fdf4", fail:"#fef2f2", warn:"#fffbeb", running:"#eff6ff" }[s] || "#f9fafb");
   const bdr   = s => ({ ok:"#bbf7d0", fail:"#fecaca", warn:"#fde68a", running:"#bfdbfe" }[s] || "#e5e7eb");
   const txtC  = s => ({ ok:"#15803d", fail:"#dc2626", warn:"#b45309", running:"#1d4ed8" }[s] || "#374151");
@@ -162,7 +165,7 @@ export default function WatsonTest() {
       {/* Header */}
       <div style={{ marginBottom:24 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
-          <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#0d3b1f,#2e7d32)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"white" }}>🌐</div>
+          <div style={{ width:44, height:44, borderRadius:"50%", background:"linear-gradient(135deg,#0d3b1f,#2e7d32)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"white" }}><FiGlobe /></div>
           <div>
             <h2 style={{ margin:0, fontSize:20, fontWeight:800, color:"#111827" }}>Watson Orchestrate API Diagnostics</h2>
             <p style={{ margin:0, fontSize:12, color:"#6b7280" }}>Browser → Proxy (localhost:3001) → IBM Cloud · No CORS issues</p>
@@ -171,7 +174,7 @@ export default function WatsonTest() {
 
         {/* Proxy instruction box */}
         <div style={{ padding:"12px 16px", background:"#fffbeb", border:"1px solid #fde68a", borderRadius:10, fontSize:12, color:"#374151", marginBottom:12 }}>
-          <strong style={{ color:"#b45309" }}>⚡ Before running:</strong> Open a <strong>second terminal</strong> in the project folder and run:
+          <strong style={{ color:"#b45309" }}><FiZap style={{verticalAlign:"middle",marginRight:3}} /> Before running:</strong> Open a <strong>second terminal</strong> in the project folder and run:
           <div style={{ marginTop:6, padding:"7px 12px", background:"#111827", borderRadius:6, fontFamily:"monospace", fontSize:13, color:"#4ade80", letterSpacing:.5 }}>
             npm run proxy
           </div>
@@ -245,7 +248,7 @@ export default function WatsonTest() {
                   )}
                   {r.tokenPreview && <div style={{ color:"#374151", marginBottom:4 }}>Token: <code style={{ background:"#f3f4f6", padding:"2px 6px", borderRadius:4, fontSize:11 }}>{r.tokenPreview}</code></div>}
                   {r.expiresIn    && <div style={{ color:"#374151", marginBottom:4 }}>Expires in: <strong>{r.expiresIn}s</strong> ({Math.round(r.expiresIn/60)} min)</div>}
-                  {r.port         && <div style={{ color:"#15803d", marginBottom:4 }}>✓ Proxy running on port <strong>{r.port}</strong></div>}
+                  {r.port         && <div style={{ color:"#15803d", marginBottom:4 }}><FiCheckCircle style={{verticalAlign:"middle",marginRight:4}} /> Proxy running on port <strong>{r.port}</strong></div>}
                   {r.endpoint     && <div style={{ color:"#374151", marginBottom:4 }}>Endpoint: <code style={{ background:"#f3f4f6", padding:"2px 6px", borderRadius:4, fontSize:11 }}>{r.endpoint}</code></div>}
 
                   {/* Models list */}
@@ -261,7 +264,7 @@ export default function WatsonTest() {
                   {/* Chat reply */}
                   {r.reply && (
                     <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:8, padding:"10px 14px", color:"#111827", marginTop:6 }}>
-                      <span style={{ fontWeight:700, color:"#15803d" }}>🤖 Granite LLM Reply: </span>{r.reply}
+                      <span style={{ fontWeight:700, color:"#15803d" }}><FaRobot style={{verticalAlign:"middle",marginRight:4}} /> Granite LLM Reply: </span>{r.reply}
                     </div>
                   )}
 
@@ -304,7 +307,7 @@ export default function WatsonTest() {
         return (
           <div style={{ marginTop:16, padding:"14px 18px", borderRadius:10, background: chatOk ? "#f0fdf4" : "#fef2f2", border:`1.5px solid ${chatOk?"#bbf7d0":"#fecaca"}` }}>
             <div style={{ fontWeight:800, fontSize:14, color: chatOk?"#15803d":"#dc2626", marginBottom:6 }}>
-              {chatOk ? "✅ Watson Orchestrate is WORKING!" : iamOk ? "⚠️ IAM Token OK but Chat endpoint not responding" : "❌ API connection failed"}
+              {chatOk ? <><FiCheckCircle style={{verticalAlign:"middle",marginRight:4}} /> Watson Orchestrate is WORKING!</> : iamOk ? <><FiAlertTriangle style={{verticalAlign:"middle",marginRight:4}} /> IAM Token OK but Chat endpoint not responding</> : <><FiXCircle style={{verticalAlign:"middle",marginRight:4}} /> API connection failed</>}
             </div>
             <div style={{ fontSize:12, color:"#374151" }}>
               {chatOk

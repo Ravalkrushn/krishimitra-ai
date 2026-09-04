@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">KrishiMitra</title>
+  <desc id="desc">A green field and rising sun inside a circular mark</desc>
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3f9b52"/>
+      <stop offset="1" stop-color="#145c32"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="#f7fbf7" stroke="#b9d8bd" stroke-width="4"/>
+  <circle cx="64" cy="48" r="19" fill="#f4b740"/>
+  <path d="M16 80c17-12 30-13 48-3 18 10 32 9 48-3v23H16z" fill="url(#field)"/>
+  <path d="M25 93c15-10 28-10 43-2 16 8 28 8 35 4" fill="none" stroke="#8acb78" stroke-width="4" stroke-linecap="round"/>
+  <path d="M64 76V42M64 59c-9-7-15-8-22-6M64 67c9-7 15-8 22-6" fill="none" stroke="#176b36" stroke-width="5" stroke-linecap="round"/>
+  <path d="M42 45l-8-6M86 45l8-6M64 26v-8" stroke="#e3a52d" stroke-width="4" stroke-linecap="round"/>
+</svg>

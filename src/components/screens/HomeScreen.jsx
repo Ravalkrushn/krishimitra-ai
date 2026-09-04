@@ -4,10 +4,12 @@ import { mandiPrices, msp } from "../../data/demoData";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { historicalTrend } from "../../data/demoData";
 import { GiFarmer, GiWheat, GiPeanut } from "react-icons/gi";
-import { MdVerifiedUser, MdLocationOn, MdPeople, MdScale } from "react-icons/md";
-import { FaShieldAlt, FaStar } from "react-icons/fa";
+import { MdVerifiedUser, MdLocationOn, MdPeople, MdScale, MdLabel } from "react-icons/md";
+import { FaShieldAlt, FaStar, FaRobot } from "react-icons/fa";
 import { BiTrendingUp } from "react-icons/bi";
 import { HiSparkles } from "react-icons/hi";
+import { FiSun, FiDollarSign, FiCalendar, FiInfo, FiAlertTriangle, FiStar as FiStarIcon, FiMapPin, FiZap, FiUsers, FiAward, FiCheckCircle, FiTrendingUp, FiShield } from "react-icons/fi";
+import { MdRocketLaunch } from "react-icons/md";
 
 const PRICE_SPARK = historicalTrend.cotton.map((d, i) => ({ ...d, x: i }));
 
@@ -48,7 +50,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
           </div>
         </div>
         <div className="weather-widget">
-          <span className="w-icon">☀️</span>
+          <span className="w-icon"><FiSun style={{fontSize:22,color:"#f59e0b"}} /></span>
           <div>
             <div className="w-temp">32°C</div>
             <div className="w-desc">Sunny</div>
@@ -66,14 +68,14 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
           </div>
         </div>
         <div className="crop-info-item">
-          <div className="cii-icon">💰</div>
+          <div className="cii-icon"><FiDollarSign style={{fontSize:20,color:"#1a5c2a"}} /></div>
           <div>
             <div className="cii-label">Quantity</div>
             <div className="cii-value">{local.quantity} Quintals</div>
           </div>
         </div>
         <div className="crop-info-item">
-          <div className="cii-icon">📅</div>
+          <div className="cii-icon"><FiCalendar style={{fontSize:20,color:"#1a5c2a"}} /></div>
           <div>
             <div className="cii-label">Season</div>
             <div className="cii-value">Kharif 2024</div>
@@ -84,7 +86,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
       {/* Market Price + Trend Chart */}
       <div className="market-price-section mb-16">
         <div className="current-price-card">
-          <div className="card-label mb-8">Current Market Price <span style={{fontSize:13}}>ℹ️</span></div>
+          <div className="card-label mb-8">Current Market Price <FiInfo style={{fontSize:13,verticalAlign:"middle"}} /></div>
           <div className="price-hero mb-4">
             ₹{cropBest.price}<span>/Quintal</span>
           </div>
@@ -116,7 +118,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
             </AreaChart>
           </ResponsiveContainer>
           <div style={{fontSize:11,color:"var(--text-3)",marginTop:4}}>
-            ⚠️ Forecast values are estimates only — not guaranteed future prices.
+            <FiAlertTriangle style={{fontSize:13,verticalAlign:"middle",marginRight:4}} /> Forecast values are estimates only — not guaranteed future prices.
           </div>
         </div>
       </div>
@@ -124,21 +126,21 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
       {/* Best Available Selling Option */}
       <div className="best-option-card mb-16">
         <div>
-          <div className="best-option-label">⭐ Best Available Selling Option</div>
+          <div className="best-option-label"><FiStarIcon style={{fontSize:14,verticalAlign:"middle",marginRight:4}} /> Best Available Selling Option</div>
           <div className="best-option-name">Shree Rang Agro Industries</div>
           <div className="best-option-sub">
-            📍 Gondal, Gujarat &nbsp;•&nbsp; 52 km from you
+            <FiMapPin style={{fontSize:13,verticalAlign:"middle",marginRight:3}} /> Gondal, Gujarat &nbsp;•&nbsp; 52 km from you
           </div>
           <div className="row-8" style={{gap:8}}>
-            <span className="chip chip-amber">⭐ Top Rated Buyer</span>
-            <span className="chip chip-blue">⚡ Fast Payment</span>
+            <span className="chip chip-amber"><FiStarIcon style={{fontSize:11,verticalAlign:"middle",marginRight:3}} /> Top Rated Buyer</span>
+            <span className="chip chip-blue"><FiZap style={{fontSize:11,verticalAlign:"middle",marginRight:3}} /> Fast Payment</span>
           </div>
         </div>
         <div style={{textAlign:"right"}}>
           <div style={{fontSize:12,color:"var(--text-3)",marginBottom:4}}>Offered Price</div>
           <div className="best-option-price">₹{cropBest.price + 30}<span style={{fontSize:15,fontWeight:500,color:"var(--text-3)"}}>/Quintal</span></div>
           <button className="btn-ai-recommend" style={{marginTop:10}}>
-            🤖 Recommended by AI
+            <FaRobot style={{fontSize:13,verticalAlign:"middle",marginRight:4}} /> Recommended by AI
           </button>
         </div>
       </div>
@@ -147,7 +149,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
       <div className="g3 mb-16">
         <div className="stat-tile">
           <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{fontSize:28,background:"#e3f2fd",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}>👥</div>
+            <div style={{fontSize:24,background:"#e3f2fd",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}><FiUsers style={{color:"#1565c0"}} /></div>
             <div>
               <div className="st-val green">18</div>
               <div className="st-lbl">Buyer Matches</div>
@@ -157,7 +159,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
         </div>
         <div className="stat-tile">
           <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{fontSize:28,background:"var(--g-50)",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}>💰</div>
+            <div style={{fontSize:24,background:"var(--g-50)",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}><FiDollarSign style={{color:"#1a5c2a"}} /></div>
             <div>
               <div className="st-val green">₹{(parseInt(local.quantity||50)*(cropBest.price+30)).toLocaleString("en-IN")}</div>
               <div className="st-lbl">Estimated Gross Value</div>
@@ -167,7 +169,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
         </div>
         <div className="stat-tile">
           <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{fontSize:28,background:"var(--amber-100)",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}>🏆</div>
+            <div style={{fontSize:24,background:"var(--amber-100)",borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center"}}><FiAward style={{color:"#d97706"}} /></div>
             <div>
               <div className="st-val amber">₹{cropBest.price + 200}</div>
               <div className="st-lbl">Best Price Potential</div>
@@ -180,19 +182,19 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
       {/* Sell Now vs Store & Sell Later */}
       <div className="sell-store-grid mb-16">
         <div className="sell-store-card">
-          <div className="ss-title">🌾 Sell Now</div>
+          <div className="ss-title"><GiWheat style={{fontSize:16,verticalAlign:"middle",marginRight:4}} /> Sell Now</div>
           <div className="ss-row"><span className="ss-lbl">Price</span><span className="ss-val">₹{cropBest.price+30} /Quintal</span></div>
           <div className="ss-row"><span className="ss-lbl">Total Value</span><span className="ss-val">₹{(parseInt(local.quantity||50)*(cropBest.price+30)).toLocaleString("en-IN")}</span></div>
           <div className="ss-row"><span className="ss-lbl">Payment</span><span className="ss-val">Within 24–48 hrs</span></div>
-          <div className="ss-conclusion">✅ Best for immediate cash flow</div>
+          <div className="ss-conclusion"><FiCheckCircle style={{fontSize:14,verticalAlign:"middle",marginRight:4}} /> Best for immediate cash flow</div>
         </div>
         <div className="sell-store-vs">VS</div>
         <div className="sell-store-card store-card">
-          <div className="ss-title">🏪 Store & Sell Later</div>
+          <div className="ss-title"><MdScale style={{fontSize:16,verticalAlign:"middle",marginRight:4}} /> Store & Sell Later</div>
           <div className="ss-row"><span className="ss-lbl">Expected Price</span><span className="ss-val">₹{cropBest.price+300} – ₹{cropBest.price+450}</span></div>
           <div className="ss-row"><span className="ss-lbl">Est. Value</span><span className="ss-val">₹{(parseInt(local.quantity||50)*(cropBest.price+300)).toLocaleString("en-IN")} – ₹{(parseInt(local.quantity||50)*(cropBest.price+450)).toLocaleString("en-IN")}</span></div>
           <div className="ss-row"><span className="ss-lbl">Storage Cost</span><span className="ss-val">₹120 /Quintal /Month</span></div>
-          <div className="ss-conclusion amber-bg">⚠️ Better returns with storage</div>
+          <div className="ss-conclusion amber-bg"><FiAlertTriangle style={{fontSize:14,verticalAlign:"middle",marginRight:4}} /> Better returns with storage</div>
         </div>
       </div>
 
@@ -204,7 +206,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
             <span className="chip chip-green">Good Quality</span>
           </div>
           <div className="quality-content">
-            <div className="quality-img">{local.crop==="cotton"?"🌾":"🥜"}</div>
+            <div className="quality-img">{local.crop==="cotton"?<GiWheat style={{fontSize:28,color:"#1a5c2a"}} />:<GiPeanut style={{fontSize:28,color:"#d97706"}} />}</div>
             <div>
               <div className="qc-row"><span className="qc-lbl">Moisture</span><span className="qc-val">8.2%</span></div>
               <div className="qc-row"><span className="qc-lbl">Grade</span><span className="qc-val">SG-2</span></div>
@@ -219,7 +221,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
             <span className="chip chip-green" style={{fontSize:10,padding:"3px 8px"}}>New</span>
           </div>
           <div className="ai-insight-body">
-            <span className="ai-insight-icon">💡</span>
+            <span className="ai-insight-icon"><HiSparkles style={{fontSize:20,color:"#f59e0b"}} /></span>
             <div className="ai-insight-text">
               Market trend is positive. Prices may increase by <strong>₹150–₹200</strong> in next 5 days. Consider selling in parts for better returns.
             </div>
@@ -232,19 +234,19 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
         <div style={{fontWeight:800,fontSize:18,marginBottom:12}}>Quick Actions</div>
         <div className="quick-actions-grid">
           <button className="qa-btn" onClick={()=>onNav("market")}>
-            <div className="qa-icon green">📈</div>
+            <div className="qa-icon green"><FiTrendingUp /></div>
             <div className="qa-label">Check Market</div>
           </button>
           <button className="qa-btn" onClick={()=>onNav("buyers")}>
-            <div className="qa-icon blue">👥</div>
+            <div className="qa-icon blue"><FiUsers /></div>
             <div className="qa-label">Find Buyers</div>
           </button>
           <button className="qa-btn" onClick={()=>onNav("quality")}>
-            <div className="qa-icon purple">🛡️</div>
+            <div className="qa-icon purple"><FiShield /></div>
             <div className="qa-label">Quality Check</div>
           </button>
           <button className="qa-btn" onClick={()=>onNav("store")}>
-            <div className="qa-icon orange">⚖️</div>
+            <div className="qa-icon orange"><MdScale /></div>
             <div className="qa-label">Sell or Store</div>
           </button>
         </div>
@@ -253,7 +255,7 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
       {/* Safety banner */}
       <div className="safety-banner">
         <div className="sb-left">
-          <span className="sb-icon">🛡️</span>
+          <span className="sb-icon"><FiShield style={{fontSize:20,color:"#1a5c2a"}} /></span>
           <div>
             <div className="sb-title">Stay Safe & Stay Informed</div>
             <div className="sb-sub">Avoid middlemen fraud. Verify buyers & prices on KrishiMitra AI.</div>
@@ -270,12 +272,12 @@ export default function HomeScreen({ profile, onProfileChange, onLaunch, results
           disabled={!local.crop || !local.quantity}
           style={{fontSize:16,padding:"16px"}}
         >
-          🚀 Run Full AI Market Analysis
+          <MdRocketLaunch style={{fontSize:18,verticalAlign:"middle",marginRight:6}} /> Run Full AI Market Analysis
         </button>
       </div>
 
       <div className="disclaimer" style={{marginTop:16}}>
-        🏷️ <strong>DEMO DATA</strong> — All prices, buyers and market data shown are sample/demo data for demonstration purposes only.
+        <MdLabel style={{fontSize:15,verticalAlign:"middle",marginRight:4}} /> <strong>DEMO DATA</strong> — All prices, buyers and market data shown are sample/demo data for demonstration purposes only.
       </div>
     </div>
   );

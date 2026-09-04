@@ -10,6 +10,9 @@ import { runBuyerMatchingAgent } from "../../agents/buyerAgent";
 import { runStorageAdvisorAgent } from "../../agents/storageAgent";
 import { runQualityAgent } from "../../agents/qualityAgent";
 import { runIncomeDashboardAgent } from "../../agents/incomeDashboardAgent";
+import { FaRobot } from "react-icons/fa";
+import { FiMessageCircle, FiTag } from "react-icons/fi";
+import { useLanguage } from "../../context/LanguageContext";
 
 const QUICK_QUESTIONS = [
   "Where should I sell my cotton?",
@@ -25,95 +28,161 @@ const QUICK_QUESTIONS = [
 // Local fallback when Watson Orchestrate is unavailable
 function localFallback(query, farmerProfile) {
   const q = query.toLowerCase();
-  const crop = q.includes("groundnut") ? "groundnut" : (farmerProfile.crop || "cotton");
+  const crop = q.includes("groundnut")
+    ? "groundnut"
+    : farmerProfile.crop || "cotton";
   const quantity = parseFloat(farmerProfile.quantity) || 50;
 
-  if (q.includes("price") || q.includes("market") || q.includes("mandi") || q.includes("rate") || q.includes("trend") || q.includes("compare")) {
+  if (
+    q.includes("price") ||
+    q.includes("market") ||
+    q.includes("mandi") ||
+    q.includes("rate") ||
+    q.includes("trend") ||
+    q.includes("compare")
+  ) {
     const result = runPriceAgent(crop);
     const { summary } = result;
-    return `📊 **Market Price (${crop.toUpperCase()})**\n\n` +
+    return (
+      `**Market Price (${crop.toUpperCase()})**\n\n` +
       `Best available price: **₹${summary.bestPrice}/qtl** at ${summary.bestMarket}\n` +
       `Average mandi price: ₹${summary.averagePrice}/qtl\n` +
       `MSP Reference: ₹${summary.msp}/qtl (₹${summary.premiumOverMSP} above MSP)\n\n` +
-      `📈 Price Trend: **${summary.trend}**\n` +
-      `🔭 Outlook: ${summary.outlook.statement}\n\n` +
-      `*${result.disclaimer}*`;
+      `Price Trend: **${summary.trend}**\n` +
+      `Outlook: ${summary.outlook.statement}\n\n` +
+      `*${result.disclaimer}*`
+    );
   }
 
-  if (q.includes("buyer") || (q.includes("sell") && q.includes("where")) || q.includes("where should")) {
-    const result = runBuyerMatchingAgent({ crop, quantity, location: farmerProfile.location });
+  if (
+    q.includes("buyer") ||
+    (q.includes("sell") && q.includes("where")) ||
+    q.includes("where should")
+  ) {
+    const result = runBuyerMatchingAgent({
+      crop,
+      quantity,
+      location: farmerProfile.location,
+    });
     const top = result.topRecommendation?.buyer;
-    if (!top) return "No buyer data available. Please run a full analysis from the Home tab.";
-    return `🤝 **Best Buyer Match for ${crop.toUpperCase()}**\n\n` +
-      `⭐ **${top.name}**\n` +
-      `📍 ${top.location} · ${top.distanceKm} km away\n` +
-      `💰 Offering: **₹${top.priceOffered}/qtl**\n` +
-      `📦 Requires: ${top.minQty}–${top.maxQty} quintals\n\n` +
-      `💡 Why recommended: ${top.matchReason}\n\n` +
+    if (!top)
+      return "No buyer data available. Please run a full analysis from the Home tab.";
+    return (
+      `**Best Buyer Match for ${crop.toUpperCase()}**\n\n` +
+      `**${top.name}**\n` +
+      `${top.location} · ${top.distanceKm} km away\n` +
+      `Offering: **₹${top.priceOffered}/qtl**\n` +
+      `Requires: ${top.minQty}–${top.maxQty} quintals\n\n` +
+      `Why recommended: ${top.matchReason}\n\n` +
       `Total matches found: ${result.totalMatches} buyers\n\n` +
-      `*${result.disclaimer}*`;
+      `*${result.disclaimer}*`
+    );
   }
 
-  if (q.includes("store") || q.includes("storage") || q.includes("wait") || q.includes("hold")) {
+  if (
+    q.includes("store") ||
+    q.includes("storage") ||
+    q.includes("wait") ||
+    q.includes("hold")
+  ) {
     const priceResult = runPriceAgent(crop);
     const result = runStorageAdvisorAgent({
-      crop, quantity,
+      crop,
+      quantity,
       bestCurrentPrice: priceResult.summary.bestPrice,
       priceOutlook: priceResult.summary.outlook,
     });
-    return `📦 **Sell Now vs Storage Analysis**\n\n` +
-      `💸 **Sell Now:** ₹${result.sellNow.estimatedRevenue.toLocaleString("en-IN")} gross\n` +
-      `📦 **Consider Storage (${result.storageMonths} months):** ₹${result.considerStorage.netRevenue.toLocaleString("en-IN")} net\n\n` +
-      `🤖 **Recommendation: ${result.recommendationText}**\n\n` +
-      result.reasoningSteps.map(s => `• ${s}`).join("\n") + "\n\n" +
-      `*${result.disclaimer}*`;
+    return (
+      `**Sell Now vs Storage Analysis**\n\n` +
+      `**Sell Now:** ₹${result.sellNow.estimatedRevenue.toLocaleString("en-IN")} gross\n` +
+      `**Consider Storage (${result.storageMonths} months):** ₹${result.considerStorage.netRevenue.toLocaleString("en-IN")} net\n\n` +
+      `**Recommendation: ${result.recommendationText}**\n\n` +
+      result.reasoningSteps.map((s) => `• ${s}`).join("\n") +
+      "\n\n" +
+      `*${result.disclaimer}*`
+    );
   }
 
   if (q.includes("quality") || q.includes("grade")) {
-    const result = runQualityAgent({ crop, qualityTier: farmerProfile.qualityTier || "medium" });
-    return `🌾 **Quality Assessment (${crop.toUpperCase()})**\n\n` +
+    const result = runQualityAgent({
+      crop,
+      qualityTier: farmerProfile.qualityTier || "medium",
+    });
+    return (
+      `**Quality Assessment (${crop.toUpperCase()})**\n\n` +
       `Estimated Grade: **${result.estimatedGrade}**\n` +
       `Buyer Impact: ${result.buyerImpact.impact} — ${result.buyerImpact.detail}\n\n` +
-      (result.improvementTips.length > 0 ? `💡 Tips:\n${result.improvementTips.map(t => `• ${t}`).join("\n")}\n\n` : "") +
-      `*${result.disclaimer}*`;
+      (result.improvementTips.length > 0
+        ? `Tips:\n${result.improvementTips.map((t) => `• ${t}`).join("\n")}\n\n`
+        : "") +
+      `*${result.disclaimer}*`
+    );
   }
 
-  if (q.includes("income") || q.includes("revenue") || q.includes("money") || q.includes("earn") || q.includes("rupee") || q.includes("expected")) {
+  if (
+    q.includes("income") ||
+    q.includes("revenue") ||
+    q.includes("money") ||
+    q.includes("earn") ||
+    q.includes("rupee") ||
+    q.includes("expected")
+  ) {
     const priceResult = runPriceAgent(crop);
-    const buyerResult = runBuyerMatchingAgent({ crop, quantity, location: farmerProfile.location });
-    const qualityResult = runQualityAgent({ crop, qualityTier: farmerProfile.qualityTier || "medium" });
+    const buyerResult = runBuyerMatchingAgent({
+      crop,
+      quantity,
+      location: farmerProfile.location,
+    });
+    const qualityResult = runQualityAgent({
+      crop,
+      qualityTier: farmerProfile.qualityTier || "medium",
+    });
     const storageResult = runStorageAdvisorAgent({
-      crop, quantity,
+      crop,
+      quantity,
       bestCurrentPrice: priceResult.summary.bestPrice,
       priceOutlook: priceResult.summary.outlook,
     });
     const dashboard = runIncomeDashboardAgent({
       farmerProfile: { ...farmerProfile, crop, quantity },
-      priceResult, buyerResult, qualityResult, storageResult,
+      priceResult,
+      buyerResult,
+      qualityResult,
+      storageResult,
     });
-    return `💰 **Income Estimate for ${quantity} qtl of ${crop.toUpperCase()}**\n\n` +
+    return (
+      `**Income Estimate for ${quantity} qtl of ${crop.toUpperCase()}**\n\n` +
       `Best available price: ₹${dashboard.income.bestAvailablePrice}/qtl via ${dashboard.income.bestSource}\n` +
       `**Estimated Gross Revenue: ₹${dashboard.income.estimatedGrossRevenue.toLocaleString("en-IN")}**\n\n` +
-      `📊 Revenue options:\n` +
-      dashboard.income.breakdown.map(b => `• ${b.option}: ₹${b.totalRevenue?.toLocaleString("en-IN")}`).join("\n") + "\n\n" +
-      `🤖 ${dashboard.finalRecommendation.summary}`;
+      `Revenue options:\n` +
+      dashboard.income.breakdown
+        .map(
+          (b) => `• ${b.option}: ₹${b.totalRevenue?.toLocaleString("en-IN")}`,
+        )
+        .join("\n") +
+      "\n\n" +
+      dashboard.finalRecommendation.summary
+    );
   }
 
-  return `Hello! I'm **KrishiMitra AI** 🌾\n\n` +
+  return (
+    `Hello! I'm **KrishiMitra AI**\n\n` +
     `I can help you with:\n` +
     `• Current mandi prices & market comparison\n` +
     `• Finding buyers for your ${crop}\n` +
     `• Sell now vs. storage decision\n` +
     `• Crop quality assessment\n` +
     `• Income estimation\n\n` +
-    `Try asking: *"Where should I sell my ${crop}?"*\nor *"What is my expected income?"*`;
+    `Try asking: *"Where should I sell my ${crop}?"*\nor *"What is my expected income?"*`
+  );
 }
 
 export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
+  const { copy } = useLanguage();
   const [messages, setMessages] = useState([
     {
       role: "ai",
-      text: `Jai Kisan! 🌾 I'm **KrishiMitra AI**, powered by **IBM Watson Orchestrate** and **IBM Granite LLM**.\n\nI'm your agentic market decision copilot for ${farmerProfile.crop || "your crop"}.\n\nAsk me anything about prices, buyers, quality, storage, or your expected income.`,
+      text: `Jai Kisan! I'm **KrishiMitra AI**, powered by **IBM Watson Orchestrate** and **IBM Granite LLM**.\n\nI'm your agentic market decision copilot for ${farmerProfile.crop || "your crop"}.\n\nAsk me anything about prices, buyers, quality, storage, or your expected income.`,
       source: "system",
     },
   ]);
@@ -146,7 +215,7 @@ export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
       const watsonResponse = await chatWithWatsonOrchestrate(
         q,
         historyRef.current.slice(0, -1), // history without current message
-        farmerProfile
+        farmerProfile,
       );
 
       let responseText;
@@ -164,10 +233,16 @@ export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
         onApiStatusChange?.("disconnected");
       }
 
-      setMessages((prev) => [...prev, { role: "ai", text: responseText, source }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: responseText, source },
+      ]);
     } catch (err) {
       const fallback = localFallback(q, farmerProfile);
-      setMessages((prev) => [...prev, { role: "ai", text: fallback, source: "local" }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: fallback, source: "local" },
+      ]);
       onApiStatusChange?.("disconnected");
     } finally {
       setLoading(false);
@@ -182,15 +257,30 @@ export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
   };
 
   return (
-    <div className="screen-content" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <div
+      className="screen-content"
+      style={{ height: "100%", display: "flex", flexDirection: "column" }}
+    >
       {/* Page Header */}
       <div className="page-header">
         <div>
-          <h2>💬 AI Assistant</h2>
-          <p>Powered by IBM Watson Orchestrate · IBM Granite LLM · Local Agent Fallback</p>
+          <h2>
+            <FiMessageCircle /> {copy.chatTitle}
+          </h2>
+          <p>
+            Powered by IBM Watson Orchestrate · IBM Granite LLM · Local Agent
+            Fallback
+          </p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <span className="ibm-badge" style={{ background: "#e3f2fd", color: "#1565c0", border: "1px solid #90caf9" }}>
+          <span
+            className="ibm-badge"
+            style={{
+              background: "#e3f2fd",
+              color: "#1565c0",
+              border: "1px solid #90caf9",
+            }}
+          >
             Watson Orchestrate API
           </span>
           <span className="demo-badge">DEMO DATA</span>
@@ -213,28 +303,43 @@ export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
             <div key={i} className={`chat-bubble ${msg.role}`}>
               {msg.role === "ai" && (
                 <div className="bubble-agent">
-                  🤖 KrishiMitra AI
+                  <FaRobot /> KrishiMitra AI
                   {msg.source === "watson" && (
                     <span className="watson-label">IBM Watson Orchestrate</span>
                   )}
                   {msg.source === "local" && (
-                    <span className="watson-label" style={{ background: "#fff8e1", color: "#e65100" }}>
+                    <span
+                      className="watson-label"
+                      style={{ background: "#fff8e1", color: "#e65100" }}
+                    >
                       Local Agent
                     </span>
                   )}
                 </div>
               )}
-              <span dangerouslySetInnerHTML={{ __html: formatText(msg.text) }} />
+              <span
+                dangerouslySetInnerHTML={{ __html: formatText(msg.text) }}
+              />
             </div>
           ))}
           {loading && (
             <div className="chat-bubble ai">
               <div className="bubble-agent">
-                🤖 KrishiMitra AI
+                <FaRobot /> KrishiMitra AI
                 <span className="watson-label">Thinking...</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#888" }}>
-                <div className="loading-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  color: "#888",
+                }}
+              >
+                <div
+                  className="loading-spinner"
+                  style={{ width: 14, height: 14, borderWidth: 2 }}
+                />
                 Consulting IBM Watson Orchestrate...
               </div>
             </div>
@@ -262,7 +367,9 @@ export default function ChatScreen({ farmerProfile, onApiStatusChange }) {
       </div>
 
       <div className="disclaimer" style={{ marginTop: 12 }}>
-        🏷️ <strong>DEMO DATA</strong> — Responses use IBM Watson Orchestrate where available, with local agent fallback. All market data is sample/demo only.
+        <FiTag /> <strong>DEMO DATA</strong> — Responses use IBM Watson
+        Orchestrate where available, with local agent fallback. All market data
+        is sample/demo only.
       </div>
     </div>
   );

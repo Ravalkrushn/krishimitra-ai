@@ -120,6 +120,6 @@ export function runPriceAgent(crop) {
     chartData,
     forecast,
     disclaimer:
-      "⚠️ Price forecasts are estimates based on available trend data. Actual future prices may differ. Do not treat this as a guaranteed price.",
+      "Price forecasts are estimates based on available trend data. Actual future prices may differ. Do not treat this as a guaranteed price.",
   };
 }
